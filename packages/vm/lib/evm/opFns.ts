@@ -607,7 +607,11 @@ export const handlers: { [k: string]: OpHandler } = {
 
     subMemUsage(runState, offset, length)
     let gasLimit = new BN(runState.eei.getGasLeft())
-    gasLimit = maxCallGas(gasLimit, runState.eei.getGasLeft(), runState._common.gteHardfork('tangerineWhistle'))
+    gasLimit = maxCallGas(
+      gasLimit,
+      runState.eei.getGasLeft(),
+      runState._common.gteHardfork('tangerineWhistle'),
+    )
 
     let data = Buffer.alloc(0)
     if (!length.isZero()) {
@@ -631,7 +635,7 @@ export const handlers: { [k: string]: OpHandler } = {
     )
     let gasLimit = new BN(runState.eei.getGasLeft())
     gasLimit = maxCallGas(gasLimit, runState.eei.getGasLeft(), true) // CREATE2 is only available after TW (Constantinople introduced this opcode)
- 
+
     let data = Buffer.alloc(0)
     if (!length.isZero()) {
       data = runState.memory.read(offset.toNumber(), length.toNumber())
@@ -684,7 +688,11 @@ export const handlers: { [k: string]: OpHandler } = {
       runState.eei.useGas(new BN(runState._common.param('gasPrices', 'callNewAccount')))
     }
 
-    gasLimit = maxCallGas(gasLimit, runState.eei.getGasLeft(), runState._common.gteHardfork('tangerineWhistle'))
+    gasLimit = maxCallGas(
+      gasLimit,
+      runState.eei.getGasLeft(),
+      runState._common.gteHardfork('tangerineWhistle'),
+    )
     // note that TW or later this cannot happen (it could have ran out of gas prior to getting here though)
     if (gasLimit.gt(runState.eei.getGasLeft())) {
       trap(ERROR.OUT_OF_GAS)
@@ -718,7 +726,11 @@ export const handlers: { [k: string]: OpHandler } = {
     if (!value.isZero()) {
       runState.eei.useGas(new BN(runState._common.param('gasPrices', 'callValueTransfer')))
     }
-    gasLimit = maxCallGas(gasLimit, runState.eei.getGasLeft(), runState._common.gteHardfork('tangerineWhistle'))
+    gasLimit = maxCallGas(
+      gasLimit,
+      runState.eei.getGasLeft(),
+      runState._common.gteHardfork('tangerineWhistle'),
+    )
     // note that TW or later this cannot happen (it could have ran out of gas prior to getting here though)
     if (gasLimit.gt(runState.eei.getGasLeft())) {
       trap(ERROR.OUT_OF_GAS)
@@ -746,7 +758,11 @@ export const handlers: { [k: string]: OpHandler } = {
 
     subMemUsage(runState, inOffset, inLength)
     subMemUsage(runState, outOffset, outLength)
-    gasLimit = maxCallGas(gasLimit, runState.eei.getGasLeft(), runState._common.gteHardfork('tangerineWhistle'))
+    gasLimit = maxCallGas(
+      gasLimit,
+      runState.eei.getGasLeft(),
+      runState._common.gteHardfork('tangerineWhistle'),
+    )
     // note that TW or later this cannot happen (it could have ran out of gas prior to getting here though)
     if (gasLimit.gt(runState.eei.getGasLeft())) {
       trap(ERROR.OUT_OF_GAS)
@@ -820,7 +836,7 @@ export const handlers: { [k: string]: OpHandler } = {
           deductGas = true
         }
       }
-    } else if (runState._common.gteHardfork("tangerineWhistle")) {
+    } else if (runState._common.gteHardfork('tangerineWhistle')) {
       // Pre EIP-150 (Tangerine Whistle) gas semantics
       const exists = await runState.stateManager.accountExists(selfdestructToAddressBuf)
       if (!exists) {
@@ -908,7 +924,7 @@ function jumpIsValid(runState: RunState, dest: number): boolean {
 
 // returns the max call gas which we want to use for the gas limit
 // note that pre-TW there was no hard limit. if you tried sending more gas, your CALLs (or equivalent) went OOG
-// 
+//
 
 /**
  * Returns an overflow-safe slice of an array. It right-pads
@@ -922,7 +938,7 @@ function maxCallGas(gasLimit: BN, gasLeft: BN, isTangerineWhistleOrLater: boolea
     const gasAllowed = gasLeft.sub(gasLeft.divn(64))
     return gasLimit.gt(gasAllowed) ? gasAllowed : gasLimit
   } else {
-    return gasLimit 
+    return gasLimit
   }
 }
 

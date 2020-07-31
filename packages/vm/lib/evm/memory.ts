@@ -58,16 +58,15 @@ export default class Memory {
     // Copy the stored "buffer" from memory into the return Buffer
 
     const loaded = Buffer.from(this._store.slice(offset, offset + size))
-    returnBuffer.fill(loaded, 0, loaded.length) 
-      
+    returnBuffer.fill(loaded, 0, loaded.length)
+
     if (loaded.length < size) {
-      // fill the remaining part of the Buffer with zeros 
+      // fill the remaining part of the Buffer with zeros
       returnBuffer.fill(0, loaded.length, size)
     }
 
     return returnBuffer
   }
-
 }
 
 const ceil = (value: number, ceiling: number): number => {
