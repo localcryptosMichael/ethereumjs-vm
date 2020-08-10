@@ -48,10 +48,9 @@ async function main() {
 
   suite
     .on('cycle', function (event: any) {
-      console.log(event)
       console.log(String(event.target))
     })
-    .run({ async: true })
+    .run()
 }
 
 export interface StateTestPreAccount {
